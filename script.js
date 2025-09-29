@@ -61,31 +61,31 @@ async function displayPokemonInfoBySearch() {
         pokemonInfoContainer.classList.add("pokemon-infos-container");
         //Création des elements nécessaires à l'affichage des données du Pokémon
         const pokemonInfoId = document.createElement("p");
-        pokemonInfoId.innerText = "N°" + pokemonInfo['id']
+        pokemonInfoId.innerText = "N°" + pokemonInfo['id'];
+        pokemonInfoContainer.appendChild(pokemonInfoId);
 
         const pokemonInfoImg = document.createElement("img");
         pokemonInfoImg.setAttribute("src", pokemonInfo['image']);
+        pokemonInfoContainer.appendChild(pokemonInfoImg);
 
         const pokemonInfoName = document.createElement("p");
         pokemonInfoName.innerText = pokemonInfo['name'];
+        pokemonInfoContainer.appendChild(pokemonInfoName);
 
         const pokemonInfoTypeName = document.createElement("p");
         pokemonInfoTypeName.innerText = "Types";
+        pokemonInfoContainer.appendChild(pokemonInfoTypeName);
 
-        pokemonInfo['apiTypes'].forEach(() => {
+        pokemonInfo['apiTypes'].forEach((type) => {
             const pokemonInfoTypesImg = document.createElement("img");
-            pokemonInfoTypesImg.setAttribute("src", pokemonInfo['apiTypes']['image'])
+            pokemonInfoTypesImg.setAttribute("src", type.image);
             pokemonInfoContainer.appendChild(pokemonInfoTypesImg);
         })
 
         const pokemonInfoEvolutionText = document.createElement("p");
         pokemonInfoEvolutionText.innerText = "Evolution";
-        // Insertion dans le container
-        pokemonInfoContainer.appendChild(pokemonInfoId);
-        pokemonInfoContainer.appendChild(pokemonInfoImg);
-        pokemonInfoContainer.appendChild(pokemonInfoName);
-        pokemonInfoContainer.appendChild(pokemonInfoTypeName);
         pokemonInfoContainer.appendChild(pokemonInfoEvolutionText);
+        
         // Insertion du container dans la section parente
         pokemonInfoParentElem.appendChild(pokemonInfoContainer);
         
