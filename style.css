@@ -50,6 +50,12 @@ h1 {
 
 }
 
+.pokemon-list-container:hover {
+    scale: 1.05;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
 .pokemon-list-text {
     display: flex;
     gap: 1em;

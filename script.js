@@ -47,6 +47,81 @@ async function pokemonList() {
         pokemonListImg_div.appendChild(pokemonListImg);
         // Insertion du container dans l'elément parent
         pokemonListParentElem.appendChild(pokemonListContainer);
+
+        // Ajout d'un événement click pour afficher les infos du Pokémon
+        pokemonListContainer.addEventListener("click", async () => {
+            // Récupération des infos détaillées du Pokémon
+            const response = await fetch(`https://pokebuildapi.fr/api/v1/pokemon/${pokemon['id']}`);
+            const pokemonInfo = await response.json();
+            // Nettoyage de la zone d'affichage
+            document.querySelector(".pokemon-infos-container").innerHTML = "";
+            // Affichage des infos principales
+            const pokemonInfoParentDiv = document.createElement("div");
+            pokemonInfoParentDiv.classList.add("pokemon-infos-div");
+            document.querySelector(".pokemon-infos-container").appendChild(pokemonInfoParentDiv);
+
+            const pokemonInfo_div = document.createElement("div");
+            pokemonInfo_div.classList.add("pokemon-info-text");
+            pokemonInfoParentDiv.appendChild(pokemonInfo_div);
+
+            const pokemonInfoName = document.createElement("h1");
+            pokemonInfoName.innerText = pokemonInfo['name'];
+            pokemonInfo_div.appendChild(pokemonInfoName);
+
+            const pokemonInfoId = document.createElement("p");
+            pokemonInfoId.innerText = "ID°" + pokemonInfo['id'];
+            pokemonInfo_div.appendChild(pokemonInfoId);
+
+            const pokemonInfoImg = document.createElement("img");
+            pokemonInfoImg.setAttribute("src", pokemonInfo['image']);
+            pokemonInfo_div.appendChild(pokemonInfoImg);
+
+            // Affichage des types
+            const pokemonInfoTypes_div = document.createElement("div");
+            pokemonInfoTypes_div.classList.add("pokemon-info-types");
+            pokemonInfoParentDiv.appendChild(pokemonInfoTypes_div);
+
+            const pokemonInfoTypeName = document.createElement("p");
+            pokemonInfoTypeName.innerText = "Types :";
+            pokemonInfoTypes_div.appendChild(pokemonInfoTypeName);
+
+            const pokemonInfoTypesImg_div = document.createElement("div");
+            pokemonInfoTypesImg_div.classList.add("pokemon-info-types-img");
+            pokemonInfoTypes_div.appendChild(pokemonInfoTypesImg_div);
+
+            pokemonInfo['apiTypes'].forEach((type) => {
+                const pokemonInfoTypesImg = document.createElement("img");
+                pokemonInfoTypesImg.setAttribute("src", type.image);
+                pokemonInfoTypesImg_div.appendChild(pokemonInfoTypesImg);
+            });
+
+            // Affichage des évolutions
+            const pokemonInfoEvo = document.createElement("div");
+            pokemonInfoEvo.classList.add("pokemon-info-evo");
+            pokemonInfoParentDiv.appendChild(pokemonInfoEvo);
+
+            const pokemonInfoEvolutionText = document.createElement("p");
+            pokemonInfoEvolutionText.innerText = "Evolution :";
+            pokemonInfoEvo.appendChild(pokemonInfoEvolutionText);
+
+            const pokemonInfoEvoText = document.createElement("div");
+            pokemonInfoEvoText.classList.add("pokemon-info-evo-text");
+            pokemonInfoEvo.appendChild(pokemonInfoEvoText);
+
+            pokemonInfo['apiEvolutions'].forEach((type) => {
+                const pokemonEvoId = document.createElement("p");
+                const pokemonEvoName = document.createElement("p");
+                const pokemonEvoImg = document.createElement("img");
+
+                pokemonEvoId.innerText = "ID°" + type.pokedexId;
+                pokemonEvoName.innerText = type.name;
+                // pokemonEvoImg.setAttribute("src", type.image);
+
+                pokemonInfoEvoText.appendChild(pokemonEvoId);
+                pokemonInfoEvoText.appendChild(pokemonEvoName);
+                pokemonInfoEvoText.appendChild(pokemonEvoImg);
+            });
+        });
     });
 }
 
