@@ -1,6 +1,6 @@
 // Fetch de l'api Pokemon
 async function fetchPokemonData() {
-    const response = await fetch("https://pokebuildapi.fr/api/v1/pokemon/limit/5");
+    const response = await fetch("https://pokebuildapi.fr/api/v1/pokemon/limit/70");
     const status = response.status;
     const data = await response.json();
 
@@ -61,14 +61,17 @@ async function displayPokemonInfoBySearch() {
         //Récupération des données du Pokemon de la recherche
         const response = await fetch("https://pokebuildapi.fr/api/v1/pokemon/" + searchValue);
         const pokemonInfo = await response.json();
+        document.querySelector(".pokemon-infos-container").innerHTML = "" 
         
         // Récupération de la section parente de Pokémon info
         const pokemonInfoParentElem = document.querySelector(".pokemon-infos");
         // Récupération du container des infos
         const pokemonInfoContainer = document.querySelector(".pokemon-infos-container");
         // Récupération de la div parente
-        const pokemonInfoParentDiv = document.querySelector(".pokemon-infos-div");
+        const pokemonInfoParentDiv = document.createElement("div");
+        pokemonInfoParentDiv.classList.add("pokemon-infos-div");
         pokemonInfoContainer.appendChild(pokemonInfoParentDiv);
+
         
         // Clean le canva du parent pour eviter la duplication
         pokemonInfoParentDiv.innerHTML = "";
@@ -89,21 +92,25 @@ async function displayPokemonInfoBySearch() {
         pokemonInfoEvo.classList.add("pokemon-info-evo");
         pokemonInfoParentDiv.appendChild(pokemonInfoEvo);
 
+        const pokemonInfoEvoText = document.createElement("div");
+        pokemonInfoEvoText.classList.add("pokemon-info-evo-text");
+        pokemonInfoEvo.appendChild(pokemonInfoEvoText);
+
         //Création des elements nécessaires à l'affichage des données du Pokémon
+        const pokemonInfoName = document.createElement("h1");
+        pokemonInfoName.innerText = pokemonInfo['name'];
+        pokemonInfo_div.appendChild(pokemonInfoName);
+
         const pokemonInfoId = document.createElement("p");
-        pokemonInfoId.innerText = "N°" + pokemonInfo['id'];
+        pokemonInfoId.innerText = "ID°" + pokemonInfo['id'];
         pokemonInfo_div.appendChild(pokemonInfoId);
 
         const pokemonInfoImg = document.createElement("img");
         pokemonInfoImg.setAttribute("src", pokemonInfo['image']);
         pokemonInfo_div.appendChild(pokemonInfoImg);
 
-        const pokemonInfoName = document.createElement("h1");
-        pokemonInfoName.innerText = pokemonInfo['name'];
-        pokemonInfo_div.appendChild(pokemonInfoName);
-
         const pokemonInfoTypeName = document.createElement("p");
-        pokemonInfoTypeName.innerText = "Types";
+        pokemonInfoTypeName.innerText = "Types :";
         pokemonInfoTypes_div.appendChild(pokemonInfoTypeName);
 
         pokemonInfo['apiTypes'].forEach((type) => {
@@ -113,8 +120,22 @@ async function displayPokemonInfoBySearch() {
         })
 
         const pokemonInfoEvolutionText = document.createElement("p");
-        pokemonInfoEvolutionText.innerText = "Evolution";
+        pokemonInfoEvolutionText.innerText = "Evolution :";
         pokemonInfoEvo.appendChild(pokemonInfoEvolutionText);
+
+        pokemonInfo['apiEvolutions'].forEach((type) => {
+            const pokemonEvoId = document.createElement("p");
+            const pokemonEvoName =document.createElement("p");
+            const pokemonEvoImg = document.createElement("img");
+
+            pokemonEvoId.innerText = "ID°" + type.pokedexId;
+            pokemonEvoName.innerText = type.name;
+            // pokemonEvoImg.setAttribute("src", type.image);
+
+            pokemonInfoEvoText.appendChild(pokemonEvoId);
+            pokemonInfoEvoText.appendChild(pokemonEvoName);
+            pokemonInfoEvoText.appendChild(pokemonEvoImg);
+        })
         
 
         // Insertion du container dans la section parente
@@ -127,10 +148,12 @@ async function displayPokemonInfoBySearch() {
         if (searchValue != "") {
             console.table(pokemonInfo);
             console.log(pokemonInfo['image']);
+            console.table(pokemonInfo[apiEvolutions]);
         }
     })
     
 }
+
 // Appel des fonctions
 getPokemonData();
 pokemonList();
