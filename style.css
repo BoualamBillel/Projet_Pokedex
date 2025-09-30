@@ -130,7 +130,7 @@ h1 {
 .pokemon-info-evo {
     display: flex;
     justify-content: center;
-    flex-direction: column;
+    flex-direction: column-reverse;
     background-color: rgb(61, 60, 60);
     border-radius: 1em;
     margin: 1em;

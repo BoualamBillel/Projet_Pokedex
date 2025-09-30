@@ -198,14 +198,30 @@ async function displayPokemonInfoBySearch() {
         pokemonInfoEvolutionText.innerText = "Evolution :";
         pokemonInfoEvo.appendChild(pokemonInfoEvolutionText);
 
-        pokemonInfo['apiEvolutions'].forEach((type) => {
+        pokemonInfo['apiEvolutions'].forEach(async (type) => {
             const pokemonEvoId = document.createElement("p");
             const pokemonEvoName =document.createElement("p");
             const pokemonEvoImg = document.createElement("img");
 
             pokemonEvoId.innerText = "ID°" + type.pokedexId;
             pokemonEvoName.innerText = type.name;
-            // pokemonEvoImg.setAttribute("src", type.image);
+            // Récupération de l'image de l'évo
+            async function getEvoData() {
+                const response = await fetch(`https://pokebuildapi.fr/api/v1/pokemon/${type.pokedexId}`);
+                const pokemonEvoData = await response.json();
+
+                return pokemonEvoData;
+            }
+            // Données du Pokémon évolué
+            const pokemonEvoData = await getEvoData();
+            // Insertion de l'image
+            pokemonEvoImg.setAttribute("src", pokemonEvoData['image']);
+
+            // DEBUG
+            console.table(pokemonEvoData);
+            
+
+
 
             pokemonInfoEvoText.appendChild(pokemonEvoId);
             pokemonInfoEvoText.appendChild(pokemonEvoName);
