@@ -26,6 +26,14 @@ async function pokemonList() {
         // Création du container de la liste
         const pokemonListContainer = document.createElement("div");
         pokemonListContainer.classList.add("pokemon-list-container");
+        // Création des sous div
+        const pokemonListText_div = document.createElement("div");
+        pokemonListText_div.classList.add("pokemon-list-text");
+        pokemonListContainer.appendChild(pokemonListText_div);
+
+        const pokemonListImg_div = document.createElement("div");
+        pokemonListImg_div.classList.add("pokemon-list-img");
+        pokemonListContainer.appendChild(pokemonListImg_div);
         // Création des elements du container
         const pokemonListId = document.createElement("p");
         pokemonListId.innerText = pokemon['id'];
@@ -33,10 +41,10 @@ async function pokemonList() {
         pokemonListName.innerText = pokemon['name'];
         const pokemonListImg = document.createElement("img");
         pokemonListImg.setAttribute("src", pokemon['image']);
-        // Insertion des elements dans le container
-        pokemonListContainer.appendChild(pokemonListId);
-        pokemonListContainer.appendChild(pokemonListName);
-        pokemonListContainer.appendChild(pokemonListImg);
+        // Insertion des elements dans les sous div correspondante
+        pokemonListText_div.appendChild(pokemonListId);
+        pokemonListText_div.appendChild(pokemonListName);
+        pokemonListImg_div.appendChild(pokemonListImg);
         // Insertion du container dans l'elément parent
         pokemonListParentElem.appendChild(pokemonListContainer);
     });
@@ -56,36 +64,59 @@ async function displayPokemonInfoBySearch() {
         
         // Récupération de la section parente de Pokémon info
         const pokemonInfoParentElem = document.querySelector(".pokemon-infos");
-        // Création du container des infos
-        const pokemonInfoContainer = document.createElement("div");
-        pokemonInfoContainer.classList.add("pokemon-infos-container");
+        // Récupération du container des infos
+        const pokemonInfoContainer = document.querySelector(".pokemon-infos-container");
+        // Récupération de la div parente
+        const pokemonInfoParentDiv = document.querySelector(".pokemon-infos-div");
+        pokemonInfoContainer.appendChild(pokemonInfoParentDiv);
+
+        // Création des sous div
+        const pokemonInfo_div = document.createElement("div");
+        pokemonInfo_div.classList.add("pokemon-info-text");
+        pokemonInfoParentDiv.appendChild(pokemonInfo_div);
+
+        const pokemonInfoTypes_div = document.createElement("div");
+        pokemonInfoTypes_div.classList.add("pokemon-info-types");
+        pokemonInfoParentDiv.appendChild(pokemonInfoTypes_div);
+
+        const pokemonInfoTypesImg_div = document.createElement("div");
+        pokemonInfoTypesImg_div.classList.add("pokemon-info-types-img");
+        pokemonInfoTypes_div.appendChild(pokemonInfoTypesImg_div);
+
+        const pokemonInfoEvo = document.createElement("div");
+        pokemonInfoEvo.classList.add("pokemon-info-evo");
+        pokemonInfoParentDiv.appendChild(pokemonInfoEvo);
+
         //Création des elements nécessaires à l'affichage des données du Pokémon
         const pokemonInfoId = document.createElement("p");
         pokemonInfoId.innerText = "N°" + pokemonInfo['id'];
-        pokemonInfoContainer.appendChild(pokemonInfoId);
+        pokemonInfo_div.appendChild(pokemonInfoId);
 
         const pokemonInfoImg = document.createElement("img");
         pokemonInfoImg.setAttribute("src", pokemonInfo['image']);
-        pokemonInfoContainer.appendChild(pokemonInfoImg);
+        pokemonInfo_div.appendChild(pokemonInfoImg);
 
-        const pokemonInfoName = document.createElement("p");
+        const pokemonInfoName = document.createElement("h1");
         pokemonInfoName.innerText = pokemonInfo['name'];
-        pokemonInfoContainer.appendChild(pokemonInfoName);
+        pokemonInfo_div.appendChild(pokemonInfoName);
 
         const pokemonInfoTypeName = document.createElement("p");
         pokemonInfoTypeName.innerText = "Types";
-        pokemonInfoContainer.appendChild(pokemonInfoTypeName);
+        pokemonInfoTypes_div.appendChild(pokemonInfoTypeName);
 
         pokemonInfo['apiTypes'].forEach((type) => {
             const pokemonInfoTypesImg = document.createElement("img");
             pokemonInfoTypesImg.setAttribute("src", type.image);
-            pokemonInfoContainer.appendChild(pokemonInfoTypesImg);
+            pokemonInfoTypesImg_div.appendChild(pokemonInfoTypesImg);
         })
 
         const pokemonInfoEvolutionText = document.createElement("p");
         pokemonInfoEvolutionText.innerText = "Evolution";
-        pokemonInfoContainer.appendChild(pokemonInfoEvolutionText);
+        pokemonInfoEvo.appendChild(pokemonInfoEvolutionText);
         
+
+        // Clean le canva du parent pour eviter la duplication
+        pokemonInfoParentElem.innerHTML = "";
         // Insertion du container dans la section parente
         pokemonInfoParentElem.appendChild(pokemonInfoContainer);
         
