@@ -47,7 +47,7 @@ h1 {
     width: 30em;
     padding-left: 1em;
     padding-right: 1em;
- 
+
 }
 
 .pokemon-list-text {
@@ -85,7 +85,7 @@ h1 {
     display: flex;
     justify-content: center;
     flex-direction: column-reverse;
-    
+
     gap: 1em;
 }
 
@@ -98,6 +98,8 @@ h1 {
     height: 80px;
 }
 
-
-
-
+.pokemon-infos-div {
+    border: white solid;
+    border-radius: 1em;
+    background: lightslategray;
+}
