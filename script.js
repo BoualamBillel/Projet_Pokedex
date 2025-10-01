@@ -146,7 +146,6 @@ async function displayPokemonInfoBySearch() {
         const pokemonInfoParentDiv = document.createElement("div");
         pokemonInfoParentDiv.classList.add("pokemon-infos-div");
         pokemonInfoContainer.appendChild(pokemonInfoParentDiv);
-
         
         // Clean le canva du parent pour eviter la duplication
         pokemonInfoParentDiv.innerHTML = "";
@@ -166,10 +165,18 @@ async function displayPokemonInfoBySearch() {
         const pokemonInfoEvo = document.createElement("div");
         pokemonInfoEvo.classList.add("pokemon-info-evo");
         pokemonInfoParentDiv.appendChild(pokemonInfoEvo);
+        
+        const pokemonInfoEvoContainer = document.createElement("div");
+        pokemonInfoEvoContainer.classList.add("pokemon-info-evo-container");
+        pokemonInfoEvo.appendChild(pokemonInfoEvoContainer);
 
         const pokemonInfoEvoText = document.createElement("div");
         pokemonInfoEvoText.classList.add("pokemon-info-evo-text");
-        pokemonInfoEvo.appendChild(pokemonInfoEvoText);
+        pokemonInfoEvoContainer.appendChild(pokemonInfoEvoText);
+
+        const pokemonInfoEvoImg_div = document.createElement("div");
+        pokemonInfoEvoImg_div.classList.add("pokemon-info-evo-img");
+        pokemonInfoEvoContainer.appendChild(pokemonInfoEvoImg_div); 
 
         //Création des elements nécessaires à l'affichage des données du Pokémon
         const pokemonInfoName = document.createElement("h1");
@@ -203,7 +210,7 @@ async function displayPokemonInfoBySearch() {
             const pokemonEvoName =document.createElement("p");
             const pokemonEvoImg = document.createElement("img");
 
-            pokemonEvoId.innerText = "ID°" + type.pokedexId;
+            pokemonEvoId.innerText = type.pokedexId;
             pokemonEvoName.innerText = type.name;
             // Récupération de l'image de l'évo
             async function getEvoData() {
@@ -225,7 +232,7 @@ async function displayPokemonInfoBySearch() {
 
             pokemonInfoEvoText.appendChild(pokemonEvoId);
             pokemonInfoEvoText.appendChild(pokemonEvoName);
-            pokemonInfoEvoText.appendChild(pokemonEvoImg);
+            pokemonInfoEvoImg_div.appendChild(pokemonEvoImg);
         })
         
 
