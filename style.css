@@ -146,6 +146,10 @@ h1 {
     cursor: pointer;
 }
 
+.pokemon-info-evo-container:hover {
+    scale: 1.05;
+    transition: all 0.3s ease-in-out;
+}
 
 .pokemon-info-evo-text {
     display: flex;
