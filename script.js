@@ -1,393 +1,223 @@
-// Fetch de l'api Pokemon
-async function fetchPokemonData() {
-    const response = await fetch("https://pokebuildapi.fr/api/v1/pokemon/limit/70");
-    const status = response.status;
-    const data = await response.json();
-
-
-    return data;
+// Récupération des données de tout les Pokémons
+async function getAllPokemonsDatas() {
+    try {
+        const response = await fetch("https://pokebuildapi.fr/api/v1/pokemon/limit/100")
+        const AllPokemonsDatas_array = await response.json();
+        // console.log("[getAllPokemonsDatas] : Données retournés par : ", AllPokemonsDatas_array);
+        return AllPokemonsDatas_array;
+    } catch (error) {
+        console.error("[getAllPokemonsDatas] : Erreur lors de la récuperation des données de tout les Pokémons ", error);
+        return null;
+    }
 }
-
-// Récupération des données du Fetch de l'api Pokémon
-async function getPokemonData() {
-    const pokemonData_array = await fetchPokemonData();
-    return pokemonData_array;
-
+// Récupération des données d'un Pokémon par ID ou Nom
+async function getPokemonDatasById(pokemonId) {
+    console.log("[getPokemonDatasById] : Données reçu : Pokémon ID = ", pokemonId);
+    try {
+        const response = await fetch(`https://pokebuildapi.fr/api/v1/pokemon/${pokemonId}`);
+        const pokemonDataById = await response.json();
+        console.log("[getPokemonDatasById] : Données retournés : ", pokemonDataById);
+        return pokemonDataById;
+    } catch (error) {
+        console.error("[getPokemonDatasById] : Erreur lors de la récupération de données par ID ou Nom de Pokémon ", error);
+        return null;
+    }
 }
-
-async function getPokemonInfoById(pokedexId) {
-    const response = await fetch(`https://pokebuildapi.fr/api/v1/pokemon/${pokedexId}`);
-    const pokemonInfo = await response.json();
-    
-    return pokemonInfo;
-}
-
-// Création des éléments nécessaires à la liste de Pokémon
-async function pokemonList() {
-    // Récupération des données des Pokémons
-    const pokemonData_array = await getPokemonData();
-    // Récupération de la section parente de pokemonList
-    const pokemonListParentElem = document.querySelector(".pokemons-list");
-    // Je parcours le tableau de données de l'api Pokémon
-    pokemonData_array.forEach(pokemon => {
-        // Création du container de la liste
-        const pokemonListContainer = document.createElement("div");
-        pokemonListContainer.classList.add("pokemon-list-container");
-        // Création des sous div
-        const pokemonListText_div = document.createElement("div");
-        pokemonListText_div.classList.add("pokemon-list-text");
-        pokemonListContainer.appendChild(pokemonListText_div);
-
-        const pokemonListImg_div = document.createElement("div");
-        pokemonListImg_div.classList.add("pokemon-list-img");
-        pokemonListContainer.appendChild(pokemonListImg_div);
-        // Création des elements du container
-        const pokemonListId = document.createElement("p");
-        pokemonListId.innerText = pokemon['id'];
-        const pokemonListName = document.createElement("p");
-        pokemonListName.innerText = pokemon['name'];
-        const pokemonListImg = document.createElement("img");
-        pokemonListImg.setAttribute("src", pokemon['image']);
-        // Insertion des elements dans les sous div correspondante
-        pokemonListText_div.appendChild(pokemonListId);
-        pokemonListText_div.appendChild(pokemonListName);
-        pokemonListImg_div.appendChild(pokemonListImg);
-        // Insertion du container dans l'elément parent
-        pokemonListParentElem.appendChild(pokemonListContainer);
-
-        // Ajout d'un événement click pour afficher les infos du Pokémon
-        pokemonListContainer.addEventListener("click", async () => {
-            // Récupération des infos détaillées du Pokémon
-            const response = await fetch(`https://pokebuildapi.fr/api/v1/pokemon/${pokemon['id']}`);
-            const pokemonInfo = await response.json();
-            // Nettoyage de la zone d'affichage
-            document.querySelector(".pokemon-infos-container").innerHTML = "";
-            // Affichage des infos principales
-            const pokemonInfoParentDiv = document.createElement("div");
-            pokemonInfoParentDiv.classList.add("pokemon-infos-div");
-            document.querySelector(".pokemon-infos-container").appendChild(pokemonInfoParentDiv);
-
-            const pokemonInfo_div = document.createElement("div");
-            pokemonInfo_div.classList.add("pokemon-info-text");
-            pokemonInfoParentDiv.appendChild(pokemonInfo_div);
-
-            const pokemonInfoName = document.createElement("h1");
-            pokemonInfoName.innerText = pokemonInfo['name'];
-            pokemonInfo_div.appendChild(pokemonInfoName);
-
-            const pokemonInfoId = document.createElement("p");
-            pokemonInfoId.innerText = "ID°" + pokemonInfo['id'];
-            pokemonInfo_div.appendChild(pokemonInfoId);
-
-            const pokemonInfoImg = document.createElement("img");
-            pokemonInfoImg.setAttribute("src", pokemonInfo['image']);
-            pokemonInfo_div.appendChild(pokemonInfoImg);
-
-            // Affichage des types
-            const pokemonInfoTypes_div = document.createElement("div");
-            pokemonInfoTypes_div.classList.add("pokemon-info-types");
-            pokemonInfoParentDiv.appendChild(pokemonInfoTypes_div);
-
-            
-            const pokemonInfoTypesImg_div = document.createElement("div");
-            pokemonInfoTypesImg_div.classList.add("pokemon-info-types-img");
-            pokemonInfoTypes_div.appendChild(pokemonInfoTypesImg_div);
-
-            const pokemonInfoTypeName = document.createElement("p");
-            pokemonInfoTypeName.innerText = "Types :";
-            pokemonInfoTypesImg_div.appendChild(pokemonInfoTypeName);
-            
-            pokemonInfo['apiTypes'].forEach((type) => {
-                const pokemonInfoTypesImg = document.createElement("img");
-                pokemonInfoTypesImg.setAttribute("src", type.image);
-                pokemonInfoTypesImg_div.appendChild(pokemonInfoTypesImg);
-            });
-
-            // Affichage des évolutions
-            const pokemonInfoEvo = document.createElement("div");
-            pokemonInfoEvo.classList.add("pokemon-info-evo");
-            pokemonInfoParentDiv.appendChild(pokemonInfoEvo);
-
-            const pokemonInfoEvoContainer = document.createElement("div");
-            pokemonInfoEvoContainer.classList.add("pokemon-info-evo-container");
-            pokemonInfoEvo.appendChild(pokemonInfoEvoContainer);
-
-            const pokemonInfoEvolutionText = document.createElement("p");
-            pokemonInfoEvolutionText.innerText = "Evolution :";
-            pokemonInfoEvo.appendChild(pokemonInfoEvolutionText);
-
-            const pokemonInfoEvoText = document.createElement("div");
-            pokemonInfoEvoText.classList.add("pokemon-info-evo-text");
-            pokemonInfoEvoContainer.appendChild(pokemonInfoEvoText);
-
-            const pokemonInfoEvoImg_div = document.createElement("div");
-            pokemonInfoEvoImg_div.classList.add("pokemon-info-evo-img");
-            pokemonInfoEvoContainer.appendChild(pokemonInfoEvoImg_div);
-
-            pokemonInfo['apiEvolutions'].forEach(async (type) => {
-                const pokemonEvoId = document.createElement("p");
-                const pokemonEvoName = document.createElement("p");
-                const pokemonEvoImg = document.createElement("img");
-
-                pokemonEvoId.innerText = type.pokedexId;
-                pokemonEvoName.innerText = type.name;
-                // Récupération de l'image de l'évo
-                async function getEvoData() {
-                    const response = await fetch(`https://pokebuildapi.fr/api/v1/pokemon/${type.pokedexId}`);
-                    const pokemonEvoData = await response.json();
-
-                    return pokemonEvoData;
-                }
-                // Données du Pokémon évolué
-                const pokemonEvoData = await getEvoData();
-                // Insertion de l'image
-                pokemonEvoImg.setAttribute("src", pokemonEvoData['image']);
-
-                // DEBUG
-                console.table(pokemonEvoData);
-
-
-
-
-                pokemonInfoEvoText.appendChild(pokemonEvoId);
-                pokemonInfoEvoText.appendChild(pokemonEvoName);
-                pokemonInfoEvoImg_div.appendChild(pokemonEvoImg);
-            })
+// Récupération des données de types du Pokémon
+function getPokemonTypesImg(pokemonDatas) {
+    let pokemonTypesImg_array = [];
+    try {
+        pokemonDatas.apiTypes.forEach(type => {
+            pokemonTypesImg_array.push(type.image);
         });
+        console.log("[getPokemonTypesImg] :  Données retournés : ", pokemonTypesImg_array);
+        return pokemonTypesImg_array;
+    } catch (error) {
+        console.error("[getPokemonTypesImg] : Erreur lors de la récupération des img de type du Pokémon", error);
+        return null;
+    }
+}
+// Récupération des infos de l"évolution du Pokémon
+async function getPokemonEvolutionInfo(pokemonDatas) {
+    try {
+        if (pokemonDatas.apiEvolutions.length <= 0) return {
+            id: "",
+            pokedexId: "",
+            name: "Pas d'évolutions possible",
+            image: "https://media.istockphoto.com/id/1904567040/fr/vectoriel/croix-rouge-mauvaise-ic%C3%B4ne.jpg?s=612x612&w=0&k=20&c=QbQkQy3GIIfWjkNqdjsU5ZV01-UysNIlhnu8CWKDKmU=",
+            sprite: "",
+            slug: "",
+            stats: {},
+            apiTypes: [],
+            apiGeneration: "",
+            apiResistances: [],
+        };
+        const pokemonEvolutionID = pokemonDatas.apiEvolutions[0].pokedexId;
+        // Récupération des données de l'évolution du Pokémon
+        const response = await fetch(`https://pokebuildapi.fr/api/v1/pokemon/${pokemonEvolutionID}`);
+        const pokemonEvolutionData_array = await response.json();
+        console.log("[getPokemonEvolutionInfo] : Données retournés : ", pokemonEvolutionData_array);
+        return pokemonEvolutionData_array;
+    } catch (error) {
+        console.error("[getPokemonEvolutionInfo] : Erreur lors de la récuperation des infos de l'évolution du Pokémon", error);
+        return null;
+    }
+}
+// Création de la card de Pokémon List
+function createPokemonCardList(pokemonDatas) {
+    console.log("[createPokemonCardList] : Données reçu : ", pokemonDatas);
+    // Création de la div card
+    const pokemonCard_div = document.createElement("div");
+    // Création des sous-div
+    const pokemonCardTextInfos_div = document.createElement("div");
+    const pokemonCardImg_div = document.createElement("div");
+    // Assignation de classe pour les divs
+    pokemonCard_div.classList.add("pokemon-card");
+    pokemonCardTextInfos_div.classList.add("pokemon-card-text-infos");
+    pokemonCardImg_div.classList.add("pokemon-card-img");
+    // Création des élements de la card
+    const pokemonCardId_element = document.createElement("h1");
+    const pokemonCardName_element = document.createElement("h1");
+    const pokemonCardImg_element = document.createElement("img");
+    // Insertion des données correspondantes
+    pokemonCardId_element.innerText = pokemonDatas.id;
+    pokemonCardName_element.innerText = pokemonDatas.name;
+    pokemonCardImg_element.setAttribute("src", pokemonDatas.image);
+    // Insertion des élements dans leur div
+    pokemonCardTextInfos_div.appendChild(pokemonCardId_element);
+    pokemonCardTextInfos_div.appendChild(pokemonCardName_element);
+    pokemonCardImg_div.appendChild(pokemonCardImg_element);
+    // Insertion des sous-div dans la card
+    pokemonCard_div.appendChild(pokemonCardTextInfos_div);
+    pokemonCard_div.appendChild(pokemonCardImg_div);
+
+    // Stockage du PokemonId dans la card
+    pokemonCard_div.setAttribute("data-pokemon-id", pokemonDatas.id);
+
+    // Si on clique sur la card elle affiche les infos du pokémon
+    pokemonCard_div.addEventListener("click", async () => {
+        const pokemonCardId = pokemonCard_div.getAttribute("data-pokemon-id");
+        const pokemonDatas = await getPokemonDatasById(pokemonCardId);
+        createPokemonInfoCard(pokemonDatas, getPokemonTypesImg(pokemonDatas));
     });
+
+    // console.log("[createPokemonCardList] : Div retournés : ", pokemonCard_div)
+    return pokemonCard_div;
+
+}
+// Création du container Pokemon Info
+async function createPokemonInfoCard(pokemonDatas, pokemonTypesImgs) {
+    // Récupération du container Pokemon Info
+    const pokemonInfoContainer_div = document.querySelector(".pokemon-infos-container");
+    // Néttoyage du container pour eviter la duplication
+    pokemonInfoContainer_div.innerHTML = "";
+    // Récupération des données de l'évolution du Pokémon
+    const pokemonEvolutionsData = await getPokemonEvolutionInfo(pokemonDatas);
+    // Récupération de la card style Pokémon List
+    const pokemonEvolutionCard = createPokemonCardList(pokemonEvolutionsData);
+    // Création des sous-div
+    const pokemonInfosElements_div = document.createElement("div");
+    const pokemonInfoTypes_div = document.createElement("div");
+    const pokemonInfoTypesText_div = document.createElement("div");
+    const pokemonInfoTypesImg_div = document.createElement("div");
+    const pokemonInfoEvolutionElements_div = document.createElement("div");
+    // Ajout des classes dans les sous-div
+    pokemonInfosElements_div.classList.add("pokemon-infos-info");
+    pokemonInfoTypes_div.classList.add("pokemon-infos-types");
+    pokemonInfoTypesText_div.classList.add("pokemon-info-types-text");
+    pokemonInfoTypesImg_div.classList.add("pokemon-info-types-img");
+    pokemonInfoEvolutionElements_div.classList.add("pokemon-infos-evolution");
+    // Créations des élements
+    const pokemonInfoId_elem = document.createElement("h1");
+    const pokemonInfoImg_elem = document.createElement("img");
+    const pokemonInfoName_elem = document.createElement("h1");
+    const pokemonInfoTypesTitle_elem = document.createElement("h1");
+    const pokemonInfoEvolutionTitle_elem = document.createElement("h1");
+    // Insertion des données
+    pokemonInfoId_elem.innerText = pokemonDatas.id;
+    pokemonInfoImg_elem.setAttribute("src", pokemonDatas.image);
+    pokemonInfoName_elem.innerText = pokemonDatas.name;
+    pokemonInfoTypesTitle_elem.innerText = "Types";
+    pokemonInfoEvolutionTitle_elem.innerText = "Evolution"
+
+    // Insertion des élements dans leurs div 
+    pokemonInfosElements_div.appendChild(pokemonInfoId_elem);
+    pokemonInfosElements_div.appendChild(pokemonInfoImg_elem);
+    pokemonInfosElements_div.appendChild(pokemonInfoName_elem);
+
+    pokemonInfoTypes_div.appendChild(pokemonInfoTypesTitle_elem);
+    pokemonTypesImgs.forEach((img) => {
+        const pokemonInfoTypeImg = document.createElement("img");
+        pokemonInfoTypeImg.setAttribute("src", img);
+        pokemonInfoTypesImg_div.appendChild(pokemonInfoTypeImg);
+    });
+
+    pokemonInfoEvolutionElements_div.appendChild(pokemonInfoEvolutionTitle_elem);
+    pokemonInfoEvolutionElements_div.appendChild(pokemonEvolutionCard);
+
+    // Insertion des sous-divs de Types
+    pokemonInfoTypes_div.appendChild(pokemonInfoTypesImg_div);
+    // Insertion des divs dans le container present dans le DOM
+    pokemonInfoContainer_div.appendChild(pokemonInfosElements_div);
+    pokemonInfoContainer_div.appendChild(pokemonInfoTypes_div);
+    pokemonInfoContainer_div.appendChild(pokemonInfoEvolutionElements_div);
+
+    // DEBUG
+    console.log("[createPokemonInfoCard] : Div retournés : ", pokemonInfoContainer_div);
+
 }
 
-// Barre de recherche
-async function displayPokemonInfoBySearch() {
+function displayPokemonInPokemonList(pokemonDatas) {
+    const listContainer = document.querySelector(".pokemons-list");
+    pokemonDatas.forEach((pokemon) => {
+        const card = createPokemonCardList(pokemon);
+        listContainer.appendChild(card);
+    })
+}
+
+function getUserResearch() {
+    // Récupération du formulaire de recherche
+    const searchForm = document.querySelector("#search-bar");
+    searchForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const formData = new FormData(searchForm);
+        const searchValue = formData.get("search-input");
+        console.log("[getUserSearch] : Donnés renvoyés : Input de recherche : ", searchValue);
+        return searchValue;
+    })
+}
+
+// DEBUG
+
+async function afficherDebug() {
+    const pokemonDatas = await getPokemonDatasById(1);
+    const allPokemonsDatas = await getAllPokemonsDatas();
+    getPokemonTypesImg(await pokemonDatas);
+    getPokemonEvolutionInfo(await pokemonDatas);
+    createPokemonCardList(await pokemonDatas);
+    createPokemonInfoCard(await pokemonDatas, getPokemonTypesImg(await pokemonDatas));
+    displayPokemonInPokemonList(allPokemonsDatas);
+
+}
+//////
+
+// EXEC
+async function main() {
+    // Récupération des données de tout les pokémons
+    const allPokemonsDatas = await getAllPokemonsDatas();
+    displayPokemonInPokemonList(allPokemonsDatas);
+    // Récupération du formulaire de recherche et affichage des infos du Pokémon rechercher
     const searchForm = document.querySelector("#search-bar");
     searchForm.addEventListener("submit", async (event) => {
         event.preventDefault();
         const formData = new FormData(searchForm);
-        const searchValue = formData.get("search-input");
-
-        //Récupération des données du Pokemon de la recherche
-        const response = await fetch("https://pokebuildapi.fr/api/v1/pokemon/" + searchValue);
-        const pokemonInfo = await response.json();
-        document.querySelector(".pokemon-infos-container").innerHTML = ""
-
-        // Récupération de la section parente de Pokémon info
-        const pokemonInfoParentElem = document.querySelector(".pokemon-infos");
-        // Récupération du container des infos
-        const pokemonInfoContainer = document.querySelector(".pokemon-infos-container");
-        // Récupération de la div parente
-        const pokemonInfoParentDiv = document.createElement("div");
-        pokemonInfoParentDiv.classList.add("pokemon-infos-div");
-        pokemonInfoContainer.appendChild(pokemonInfoParentDiv);
-
-        // Clean le canva du parent pour eviter la duplication
-        pokemonInfoParentDiv.innerHTML = "";
-        // Création des sous div
-        const pokemonInfo_div = document.createElement("div");
-        pokemonInfo_div.classList.add("pokemon-info-text");
-        pokemonInfoParentDiv.appendChild(pokemonInfo_div);
-
-        const pokemonInfoTypes_div = document.createElement("div");
-        pokemonInfoTypes_div.classList.add("pokemon-info-types");
-        pokemonInfoParentDiv.appendChild(pokemonInfoTypes_div);
-
-        const pokemonInfoTypesImg_div = document.createElement("div");
-        pokemonInfoTypesImg_div.classList.add("pokemon-info-types-img");
-        pokemonInfoTypes_div.appendChild(pokemonInfoTypesImg_div);
-
-        const pokemonInfoEvo = document.createElement("div");
-        pokemonInfoEvo.classList.add("pokemon-info-evo");
-        pokemonInfoParentDiv.appendChild(pokemonInfoEvo);
-
-        const pokemonInfoEvoContainer = document.createElement("div");
-        pokemonInfoEvoContainer.classList.add("pokemon-info-evo-container");
-        pokemonInfoEvo.appendChild(pokemonInfoEvoContainer);
-
-        const pokemonInfoEvoText = document.createElement("div");
-        pokemonInfoEvoText.classList.add("pokemon-info-evo-text");
-        pokemonInfoEvoContainer.appendChild(pokemonInfoEvoText);
-
-        const pokemonInfoEvoImg_div = document.createElement("div");
-        pokemonInfoEvoImg_div.classList.add("pokemon-info-evo-img");
-        pokemonInfoEvoContainer.appendChild(pokemonInfoEvoImg_div);
-
-        //Création des elements nécessaires à l'affichage des données du Pokémon
-        const pokemonInfoName = document.createElement("h1");
-        pokemonInfoName.innerText = pokemonInfo['name'];
-        pokemonInfo_div.appendChild(pokemonInfoName);
-
-        const pokemonInfoId = document.createElement("p");
-        pokemonInfoId.innerText = "ID°" + pokemonInfo['id'];
-        pokemonInfo_div.appendChild(pokemonInfoId);
-
-        const pokemonInfoImg = document.createElement("img");
-        pokemonInfoImg.setAttribute("src", pokemonInfo['image']);
-        pokemonInfo_div.appendChild(pokemonInfoImg);
-
-        const pokemonInfoTypeName = document.createElement("p");
-        pokemonInfoTypeName.innerText = "Types :";
-        pokemonInfoTypes_div.appendChild(pokemonInfoTypeName);
-
-        pokemonInfo['apiTypes'].forEach((type) => {
-            const pokemonInfoTypesImg = document.createElement("img");
-            pokemonInfoTypesImg.setAttribute("src", type.image);
-            pokemonInfoTypesImg_div.appendChild(pokemonInfoTypesImg);
-        })
-
-        const pokemonInfoEvolutionText = document.createElement("p");
-        pokemonInfoEvolutionText.innerText = "Evolution :";
-        pokemonInfoEvo.appendChild(pokemonInfoEvolutionText);
-
-        pokemonInfo['apiEvolutions'].forEach(async (type) => {
-            const pokemonEvoId = document.createElement("p");
-            const pokemonEvoName = document.createElement("p");
-            const pokemonEvoImg = document.createElement("img");
-
-            pokemonEvoId.innerText = type.pokedexId;
-            pokemonEvoName.innerText = type.name;
-            // Récupération de l'image de l'évo
-            async function getEvoData() {
-                const response = await fetch(`https://pokebuildapi.fr/api/v1/pokemon/${type.pokedexId}`);
-                const pokemonEvoData = await response.json();
-
-                return pokemonEvoData;
-            }
-            // Données du Pokémon évolué
-            const pokemonEvoData = await getEvoData();
-            // Enregistrement de l'id du pokémon evolué dans le container
-            pokemonInfoEvoContainer.setAttribute("data-evo-pokedex-id", type.pokedexId);
-            // Insertion de l'image
-            pokemonEvoImg.setAttribute("src", pokemonEvoData['image']);
-
-            // DEBUG
-            console.table(pokemonEvoData);
-
-
-
-
-            pokemonInfoEvoText.appendChild(pokemonEvoId);
-            pokemonInfoEvoText.appendChild(pokemonEvoName);
-            pokemonInfoEvoImg_div.appendChild(pokemonEvoImg);
-        })
-
-
-        // Insertion du container dans la section parente
-        pokemonInfoParentElem.appendChild(pokemonInfoContainer);
-
-
-        // Ajout d'un événement click pour afficher les infos de l'évolution
-        pokemonInfoEvoContainer.addEventListener("click", async (event) => {
-            // Récupération de l'id pour la récupération de données
-            const evoId  = event.currentTarget.getAttribute("data-evo-pokedex-id");
-            const pokemonEvoDataArray = await getPokemonInfoById(evoId);
-            // Nettoyage de la zone d'affichage
-            document.querySelector(".pokemon-infos-container").innerHTML = "";
-            // Affichage des infos principales
-            const pokemonInfoParentDiv = document.createElement("div");
-            pokemonInfoParentDiv.classList.add("pokemon-infos-div");
-            document.querySelector(".pokemon-infos-container").appendChild(pokemonInfoParentDiv);
-
-            const pokemonInfo_div = document.createElement("div");
-            pokemonInfo_div.classList.add("pokemon-info-text");
-            pokemonInfoParentDiv.appendChild(pokemonInfo_div);
-
-            const pokemonInfoName = document.createElement("h1");
-            pokemonInfoName.innerText = pokemonEvoDataArray['name'];
-            pokemonInfo_div.appendChild(pokemonInfoName);
-
-            const pokemonInfoId = document.createElement("p");
-            pokemonInfoId.innerText = "ID°" + pokemonEvoDataArray['id'];
-            pokemonInfo_div.appendChild(pokemonInfoId);
-
-            const pokemonInfoImg = document.createElement("img");
-            pokemonInfoImg.setAttribute("src", pokemonEvoDataArray['image']);
-            pokemonInfo_div.appendChild(pokemonInfoImg);
-
-            // Affichage des types
-            const pokemonInfoTypes_div = document.createElement("div");
-            pokemonInfoTypes_div.classList.add("pokemon-info-types");
-            pokemonInfoParentDiv.appendChild(pokemonInfoTypes_div);
-
-            
-            const pokemonInfoTypesImg_div = document.createElement("div");
-            pokemonInfoTypesImg_div.classList.add("pokemon-info-types-img");
-            pokemonInfoTypes_div.appendChild(pokemonInfoTypesImg_div);
-            
-            const pokemonInfoTypeName = document.createElement("p");
-            pokemonInfoTypeName.innerText = "Types :";
-            pokemonInfoTypesImg_div.appendChild(pokemonInfoTypeName);
-            
-            pokemonEvoDataArray['apiTypes'].forEach((type) => {
-                const pokemonInfoTypesImg = document.createElement("img");
-                pokemonInfoTypesImg.setAttribute("src", type.image);
-                pokemonInfoTypesImg_div.appendChild(pokemonInfoTypesImg);
-            });
-
-            // Affichage des évolutions
-            const pokemonInfoEvo = document.createElement("div");
-            pokemonInfoEvo.classList.add("pokemon-info-evo");
-            pokemonInfoParentDiv.appendChild(pokemonInfoEvo);
-
-            const pokemonInfoEvoContainer = document.createElement("div");
-            pokemonInfoEvoContainer.classList.add("pokemon-info-evo-container");
-            pokemonInfoEvo.appendChild(pokemonInfoEvoContainer);
-
-            const pokemonInfoEvolutionText = document.createElement("p");
-            pokemonInfoEvolutionText.innerText = "Evolution :";
-            pokemonInfoEvo.appendChild(pokemonInfoEvolutionText);
-
-            const pokemonInfoEvoText = document.createElement("div");
-            pokemonInfoEvoText.classList.add("pokemon-info-evo-text");
-            pokemonInfoEvoContainer.appendChild(pokemonInfoEvoText);
-
-            const pokemonInfoEvoImg_div = document.createElement("div");
-            pokemonInfoEvoImg_div.classList.add("pokemon-info-evo-img");
-            pokemonInfoEvoContainer.appendChild(pokemonInfoEvoImg_div);
-
-            pokemonEvoDataArray['apiEvolutions'].forEach(async (type) => {
-                const pokemonEvoId = document.createElement("p");
-                const pokemonEvoName = document.createElement("p");
-                const pokemonEvoImg = document.createElement("img");
-
-                pokemonEvoId.innerText = type.pokedexId;
-                pokemonEvoName.innerText = type.name;
-                // Récupération de l'image de l'évo
-                async function getEvoData() {
-                    const response = await fetch(`https://pokebuildapi.fr/api/v1/pokemon/${type.pokedexId}`);
-                    const pokemonEvoData = await response.json();
-
-                    return pokemonEvoData;
-                }
-                // Données du Pokémon évolué
-                const pokemonEvoData = await getEvoData();
-                // Insertion de l'image
-                pokemonEvoImg.setAttribute("src", pokemonEvoData['image']);
-
-                // DEBUG
-                pokemonInfoEvoContainer.addEventListener("click", () => {
-                    const evoId  = event.currentTarget.getAttribute("data-evo-pokedex-id");
-                    console.table(evoId);
-                })
-
-
-
-
-                pokemonInfoEvoText.appendChild(pokemonEvoId);
-                pokemonInfoEvoText.appendChild(pokemonEvoName);
-                pokemonInfoEvoImg_div.appendChild(pokemonEvoImg);
-            })
-        });
-
-        // DEBUG
-        if (searchValue != "") {
-            console.table(pokemonInfo);
-            console.log(pokemonInfo['image']);
-            console.table(pokemonInfo[apiEvolutions]);
-        }
+        const userSearchValue = formData.get("search-input");
+        console.log("Recherche User = ", userSearchValue);
+        const researchedPokemonData = await getPokemonDatasById(userSearchValue);
+        console.log("Données retournés par la recherche : ", researchedPokemonData);
+        createPokemonInfoCard(researchedPokemonData, getPokemonTypesImg(await researchedPokemonData));
     })
 
 }
 
-// Appel des fonctions
-getPokemonData();
-pokemonList();
-displayPokemonInfoBySearch();
+main();
