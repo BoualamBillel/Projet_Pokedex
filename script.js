@@ -40,6 +40,18 @@ function getPokemonTypesImg(pokemonDatas) {
 // Récupération des infos de l"évolution du Pokémon
 async function getPokemonEvolutionInfo(pokemonDatas) {
     try {
+        if (pokemonDatas.apiEvolutions.length <= 0) return {
+            id: "",
+            pokedexId: "",
+            name: "Pas d'évolutions possible",
+            image: "https://media.istockphoto.com/id/1904567040/fr/vectoriel/croix-rouge-mauvaise-ic%C3%B4ne.jpg?s=612x612&w=0&k=20&c=QbQkQy3GIIfWjkNqdjsU5ZV01-UysNIlhnu8CWKDKmU=",
+            sprite: "",
+            slug: "",
+            stats: {},
+            apiTypes: [],
+            apiGeneration: "",
+            apiResistances: [],
+        };
         const pokemonEvolutionID = pokemonDatas.apiEvolutions[0].pokedexId;
         // Récupération des données de l'évolution du Pokémon
         const response = await fetch(`https://pokebuildapi.fr/api/v1/pokemon/${pokemonEvolutionID}`);
@@ -53,7 +65,7 @@ async function getPokemonEvolutionInfo(pokemonDatas) {
 }
 // Création de la card de Pokémon List
 function createPokemonCardList(pokemonDatas) {
-    // console.log("[createPokemonCardList] : Données reçu : ", pokemonDatas);
+    console.log("[createPokemonCardList] : Données reçu : ", pokemonDatas);
     // Création de la div card
     const pokemonCard_div = document.createElement("div");
     // Création des sous-div
@@ -81,6 +93,13 @@ function createPokemonCardList(pokemonDatas) {
 
     // Stockage du PokemonId dans la card
     pokemonCard_div.setAttribute("data-pokemon-id", pokemonDatas.id);
+
+    // Si on clique sur la card elle affiche les infos du pokémon
+    pokemonCard_div.addEventListener("click", async () => {
+        const pokemonCardId = pokemonCard_div.getAttribute("data-pokemon-id");
+        const pokemonDatas = await getPokemonDatasById(pokemonCardId);
+        createPokemonInfoCard(pokemonDatas, getPokemonTypesImg(pokemonDatas));
+    });
 
     // console.log("[createPokemonCardList] : Div retournés : ", pokemonCard_div)
     return pokemonCard_div;
@@ -169,7 +188,6 @@ function getUserResearch() {
 }
 
 // DEBUG
-getPokemonDatasById(1);
 
 async function afficherDebug() {
     const pokemonDatas = await getPokemonDatasById(1);
@@ -181,8 +199,7 @@ async function afficherDebug() {
     displayPokemonInPokemonList(allPokemonsDatas);
 
 }
-
-// afficherDebug();
+//////
 
 // EXEC
 async function main() {
@@ -195,27 +212,11 @@ async function main() {
         event.preventDefault();
         const formData = new FormData(searchForm);
         const userSearchValue = formData.get("search-input");
-        console.log("user input = ", userSearchValue);
+        console.log("Recherche User = ", userSearchValue);
         const researchedPokemonData = await getPokemonDatasById(userSearchValue);
-        console.log("reseacher data pokemon : ", researchedPokemonData);
+        console.log("Données retournés par la recherche : ", researchedPokemonData);
         createPokemonInfoCard(researchedPokemonData, getPokemonTypesImg(await researchedPokemonData));
     })
-
-    // Quand on click sur une card Pokémon, les infos de celui ci sont affichés
-    const pokemonCard = document.querySelectorAll(".pokemon-card");
-    console.log(pokemonCard);
-    if (pokemonCard) {
-        pokemonCard.forEach(pokemon => {
-            const pokemonCardId = pokemon.getAttribute("data-pokemon-id");
-            pokemon.addEventListener("click", async (event) => {
-                const pokemonDatas = await getPokemonDatasById(pokemonCardId);
-                console.log("[Click sur Card] : Données reçu : ", pokemonDatas);
-                createPokemonInfoCard(pokemonDatas, getPokemonTypesImg(pokemonDatas));
-            })
-        })
-    }
-
-
 
 }
 
